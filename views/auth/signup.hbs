@@ -4,10 +4,24 @@
 <form action="/signup" method="POST">
   <label>Username</label>
   <input type="text" name="username">
+  {{!-- Mensagem de erro para validacao do formulario --}}
+  {{#if username}}
+  {{> errorPartial username}}
+  {{/if}}
   <label>Email</label>
   <input type="email" name="email">
+  {{#if email}}
+  {{> errorPartial email}}
+  {{/if}}
+
   <label>Password</label>
   <input type="password" name="password">
+  {{#if password}}
+  {{> errorPartial password}}
+  {{/if}}
 
   <button type="submit">Salvar</button>
+  {{#if errorMessage}}
+  {{> errorPartial errorMessage}}
+  {{/if}}
 </form>

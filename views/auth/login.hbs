@@ -1,0 +1,16 @@
+{{!-- View do formulario de criacao de usuario --}}
+
+{{!-- Dispara uma requisicao POST para a rota /signup quando o usuario clicar no botao "Salvar" --}}
+<form action="/login" method="POST">
+
+  <label>Email</label>
+  <input type="email" name="email">
+
+  <label>Password</label>
+  <input type="password" name="password">
+
+  <button type="submit">Login</button>
+  {{#if errorMessage}}
+  {{> errorPartial errorMessage}}
+  {{/if}}
+</form>
