@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const saltRounds = 10;
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 
 // Importar model de usuario
 const User = require('../models/User.model');
@@ -80,38 +81,22 @@ router.post('/signup', async (req, res) => {
 router.get('/login', (req, res) => res.render('auth/login'));
 
 // POST Login - Recebe os dados que o usuario preencheu no form de login
-router.post('/login', (req, res, next) => {
-  const { email, password } = req.body;
-
-  // Recuperar informacoes do usuario no banco
-  User.findOne({ email })
-    .then(user => {
-      if (!user) {
-        // Caso o usuario nao exista no banco, retorne erro
-        return res.render('auth/login', { errorMessage: 'Either email or password are wrong.' });
-      }
-
-      // Comparar a senha em texto claro com a senha criptografada no banco
-      if (bcrypt.compareSync(password, user.passwordHash)) {
-        // Se a senha estiver correta, redireciona para perfil do usuario
-        req.session.currentUser = user;
-        return res.redirect('/profile');
-      } else {
-        // Caso contrario, retorne erro
-        return res.render('auth/login', { errorMessage: 'Either email or password are wrong.' });
-      }
-    })
-    .catch(err => next(err));
-});
+router.post(
+  '/login',
+  passport.authenticate('local', {
+    successRedirect: '/profile',
+    failureRedirect: '/login'
+  })
+);
 
 // GET Profile - Rota para exibir os dados do usuario atualmente logado - Rota privada - apenas usuarios logados podem acessar
 router.get('/profile', (req, res) => {
-  console.log('SESSION => ', req.session);
+  console.log('SESSION => ', req.user);
 
-  if (!req.session.currentUser || !req.session.currentUser._id) {
+  if (!req.user || !req.user._id) {
     return res.redirect('/login');
   }
-  return res.render('auth/profile', req.session.currentUser);
+  return res.render('auth/profile', req.user);
 });
 
 // GET Logout - Rota para destruir a sessao do usuario logado

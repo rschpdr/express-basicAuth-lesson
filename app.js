@@ -21,6 +21,9 @@ const app = express();
 // Aqui estamos usando um conceito chamado currying: uma funcao que retorna outra funcao. Podemos invocar a funcao de dentro sem atribui-la a uma variavel antes
 require('./configs/session.config')(app);
 
+// Configurar passport
+require('./configs/passport.config')(app);
+
 // Express View engine setup
 
 app.set('views', path.join(__dirname, 'views'));
